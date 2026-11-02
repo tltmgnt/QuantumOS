@@ -4,7 +4,7 @@ The supplied paper states twelve principal subsystems but enumerates fifteen spe
 | Service | Proposed responsibility | Current implementation |
 |---|---|---|
 | Ingestion | Measurements, literature, citations, constraints | Not implemented |
-| Knowledge | Claims, ontology, evidence, epistemic labels | Claim record and labels only |
+| Knowledge | Claims, ontology, evidence, epistemic labels | Claim records, labels, and persistent typed claim relationships |
 | TGA-Ω | Typed state graph, weighted transitions, gap metrics | Not implemented |
 | Gap engine | Classify missing mathematical/physical/evidential links | Not implemented |
 | Agent orchestration | Fifteen specialist research roles | Not implemented |

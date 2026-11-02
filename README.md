@@ -41,6 +41,24 @@ with ScientificMemory("research.sqlite3") as memory:
 
 Run the example once per new database; duplicate IDs are rejected. Source and artifact references are recorded, not downloaded or validated. The store replays retained events on each operation and is intended for small research logs. Tail truncation, full database rewrites, authenticated identity, and external immutable anchoring are not covered. Back up the database separately.
 
+### Claim knowledge graph
+Directed relationships are persisted in the same verified event history:
+
+```python
+from quantum_omega import Claim, Relation, RelationType
+from quantum_omega.memory import ScientificMemory
+
+with ScientificMemory("graph.sqlite3") as memory:
+    memory.register(Claim("model", "Illustrative model claim", ("local:model-notes",)))
+    memory.register(Claim("prediction", "Illustrative prediction claim", ("local:prediction-notes",)))
+    memory.link(Relation("link-001", "prediction", "model",
+                         RelationType.DERIVED_FROM, ("local:derivation",)))
+    print(memory.relations("prediction", direction="outgoing"))
+    print(memory.history("model"))
+```
+
+Relations are user-supplied assertions, not inferred scientific facts. Supported types are `supports`, `contradicts`, `depends_on`, and `derived_from`. Queries return direct edges in insertion order and can filter by `RelationType`. Self-links, missing endpoints, duplicate relation IDs, and missing evidence references are rejected. Cycles between distinct claims are permitted and do not prove valid derivations. Existing databases remain readable; old software cannot replay newly written link events. Ontology ingestion, inference, and topological gap analysis remain future work.
+
 ### Research loop
 Reality → evidence → representation → gap → conjecture → explanation → criticism → prediction → verification → experiment → knowledge.
 

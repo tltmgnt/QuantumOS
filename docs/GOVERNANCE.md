@@ -8,3 +8,5 @@ Promotion requires evidence review. The prototype requires an artifact reference
 SQLite scientific memory now provides transactional persistence and retained-chain verification. It detects changed records and sequence gaps, but cannot detect removal of the trailing history or a coherently rewritten database without an externally trusted checkpoint. Source identifiers and artifact references are preserved without authenticating their content.
 
 Claim rejection, invalidation, branching, recovery, access control, and experiment execution are future work. Do not use this prototype as an autonomous discovery authority.
+
+Relations have their own epistemic labels and evidence references. A supports or derived_from edge is an asserted relationship; it does not validate evidence, establish causality, or promote the endpoint claims. Relationship creation is transactional, checked against existing claims, and included in both endpoints’ provenance histories.

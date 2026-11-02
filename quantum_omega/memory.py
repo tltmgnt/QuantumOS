@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from hashlib import sha256
 import json
 import sqlite3
-from .core import Claim, EpistemicStatus, Ledger, Stage
+from .core import Claim, EpistemicStatus, Ledger, Relation, RelationType, Stage
 
 
 class ScientificMemory:
@@ -45,6 +45,10 @@ class ScientificMemory:
             if event['event'] == 'register':
                 ledger.register(Claim(event['id'], event['text'], tuple(event['sources']),
                                       status=EpistemicStatus(event['status'])))
+            elif event['event'] == 'link':
+                ledger.link(Relation(event['id'], event['source'], event['target'],
+                                     RelationType(event['kind']), tuple(event['evidence']),
+                                     EpistemicStatus(event['status'])))
             elif event['event'] == 'advance':
                 ledger.advance(event['id'], Stage(event['stage']), event['artifact'],
                                event['reviewer'], event['producer'])
@@ -78,6 +82,13 @@ class ScientificMemory:
     def advance(self, claim_id, target, artifact, reviewer, producer):
         return self._write(lambda ledger: ledger.advance(claim_id, target, artifact, reviewer, producer))
 
+    def link(self, relation):
+        return self._write(lambda ledger: ledger.link(relation))
+
+    def relations(self, claim_id, direction="both", kind=None):
+        ledger, _ = self._replay()
+        return ledger.relations(claim_id, direction, kind)
+
     def get(self, claim_id):
         ledger, _ = self._replay()
         return ledger.get(claim_id)
@@ -91,4 +102,7 @@ class ScientificMemory:
         """Return provenance events for a claim after validating the whole log."""
         ledger, _ = self._replay()
         events = [json.loads(payload) for payload in ledger.events]
-        return tuple(event for event in events if event['id'] == claim_id)
+        ledger.get(claim_id)
+        return tuple(event for event in events if (
+            event['event'] != 'link' and event['id'] == claim_id) or (
+            event['event'] == 'link' and claim_id in (event['source'], event['target'])))

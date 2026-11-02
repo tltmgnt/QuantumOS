@@ -5,8 +5,8 @@ The supplied paper states twelve principal subsystems but enumerates fifteen spe
 |---|---|---|
 | Ingestion | Measurements, literature, citations, constraints | Strict local JSON source/claim/relation bundle import |
 | Knowledge | Claims, ontology, evidence, epistemic labels | Claim records, labels, controlled source domains, and persistent typed claim relationships |
-| TGA-Ω | Typed state graph, weighted transitions, gap metrics | Not implemented |
-| Gap engine | Classify missing mathematical/physical/evidential links | Not implemented |
+| TGA-Ω | Typed state graph, weighted transitions, gap metrics | Read-only unweighted dependency paths and cycle components |
+| Gap engine | Classify missing mathematical/physical/evidential links | Structural review prompts: isolates, dependency cycles, asserted contradictions |
 | Agent orchestration | Fifteen specialist research roles | Not implemented |
 | Theory factory | Assumptions, models, predictions, falsifiers | Specification only |
 | Validation | Mathematics, quantum, gravity, independent review | Sequential stage checks only |

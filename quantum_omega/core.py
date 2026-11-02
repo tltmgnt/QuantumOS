@@ -79,6 +79,12 @@ class Ledger:
         previous = sha256(self._events[-1].encode()).hexdigest() if self._events else None
         self._events.append(json.dumps({"previous": previous, **payload}, sort_keys=True))
 
+    def claims(self):
+        return tuple(self._claims.values())
+
+    def all_relations(self):
+        return tuple(self._relations.values())
+
     def get(self, claim_id: str):
         """Return the immutable current claim record."""
         return self._claims[claim_id]

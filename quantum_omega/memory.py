@@ -10,7 +10,11 @@ from .ingestion import Domain, ScientificSource, SourceKind, parse_bundle
 class ScientificMemory:
     """Persist governance events; hashes detect edits, not privileged rewrites."""
 
-    def __init__(self, path):
+    def __init__(self, path, *, read_only=False):
+        if read_only:
+            from pathlib import Path
+            self._db = sqlite3.connect(Path(path).resolve().as_uri() + '?mode=ro', uri=True, isolation_level=None)
+            return
         self._db = sqlite3.connect(path, isolation_level=None)
         self._db.execute('''CREATE TABLE IF NOT EXISTS events (
             sequence INTEGER PRIMARY KEY,
@@ -78,6 +82,11 @@ class ScientificMemory:
         except BaseException:
             self._db.execute('ROLLBACK')
             raise
+
+    def snapshot(self):
+        """Return immutable claim/relationship records from one verified replay."""
+        ledger, _ = self._replay()
+        return ledger.claims(), ledger.all_relations()
 
     def get_source(self, source_id):
         ledger, _ = self._replay()

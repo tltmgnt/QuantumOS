@@ -1,7 +1,14 @@
 """Pin an independently authenticated Ed25519 public key by expected SHA-256."""
 import hashlib
 import json
+import os
+import stat
 from pathlib import Path
+
+def _check_parent(path):
+    if path.parent.is_symlink() or not path.parent.is_dir():
+        raise ValueError("Pinned-key parent must be a real directory, not a symlink")
+
 
 def pin_trusted_public_key(public_key_hex, expected_sha256, destination):
     if not isinstance(public_key_hex, str) or len(public_key_hex) != 64:
@@ -24,15 +31,29 @@ def pin_trusted_public_key(public_key_hex, expected_sha256, destination):
         "identity_authenticated_by_software": False,
     }
     destination = Path(destination)
-    with destination.open("x", encoding="utf-8") as stream:
+    _check_parent(destination)
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    fd = os.open(destination, flags, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as stream:
         stream.write(json.dumps(record, sort_keys=True, indent=2) + "\n")
     return record
 
 def read_pinned_public_key(path):
     path = Path(path)
+    _check_parent(path)
     if path.is_symlink() or not path.is_file():
         raise ValueError("Pinned key must be a regular non-symlink file")
-    record = json.loads(path.read_text(encoding="utf-8"))
+    flags = os.O_RDONLY
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    fd = os.open(path, flags)
+    with os.fdopen(fd, "r", encoding="utf-8") as stream:
+        metadata = os.fstat(stream.fileno())
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_nlink != 1:
+            raise ValueError("Pinned key must be an unlinked regular file (no hardlinks)")
+        record = json.load(stream)
     if not isinstance(record, dict) or set(record) != {
         "schema_version", "kind", "public_key_hex", "public_key_sha256",
         "identity_authenticated_by_software"

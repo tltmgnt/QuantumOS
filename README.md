@@ -25,6 +25,22 @@ python -m unittest discover -s tests -v
 - `quantum_omega/`: runnable claim, ledger, and planner primitives.
 - `tests/`: governance and planner regression checks.
 
+### Persistent scientific memory
+The optional SQLite store preserves claims, source identifiers, and stage-transition evidence across restarts, with transactional writes and a hash-linked event history.
+
+```python
+from quantum_omega import Claim, Stage
+from quantum_omega.memory import ScientificMemory
+
+with ScientificMemory("research.sqlite3") as memory:
+    memory.register(Claim("example-001", "Illustrative conjecture", ("local:notes",)))
+    memory.advance("example-001", Stage.CONJECTURE, "local:assumptions", "reviewer", "author")
+    print(memory.get("example-001"))
+    assert memory.verify()
+```
+
+Run the example once per new database; duplicate IDs are rejected. Source and artifact references are recorded, not downloaded or validated. The store replays retained events on each operation and is intended for small research logs. Tail truncation, full database rewrites, authenticated identity, and external immutable anchoring are not covered. Back up the database separately.
+
 ### Research loop
 Reality → evidence → representation → gap → conjecture → explanation → criticism → prediction → verification → experiment → knowledge.
 

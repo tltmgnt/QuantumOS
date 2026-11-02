@@ -46,10 +46,10 @@ class TrustedKeyPinTests(unittest.TestCase):
             with patch("sys.stdout", new_callable=io.StringIO):
                 self.assertEqual(main(["pin", "--public-key-hex", key, "--expected-sha256", digest, "--output", str(pinned)]), 0)
             with patch("sys.stdout", new_callable=io.StringIO) as out:
-                self.assertEqual(main(["verify", str(root / "handoff"), "--inventory", str(root / "handoff-inventory.json"), "--signature", str(root / "handoff-signature.json"), "--pinned-key", str(pinned)]), 0)
+                self.assertEqual(main(["verify", str(root / "handoff"), "--inventory", str(root / "handoff-inventory.json"), "--signature", str(root / "handoff-signature.json"), "--pinned-key", str(pinned), "--expected-sha256", digest]), 0)
                 self.assertTrue(json.loads(out.getvalue())["manifest_signature_valid"])
             wrong = Path(tmp) / "wrong.json"
             other = bytes(range(1, 33))
             pin_trusted_public_key(other.hex(), hashlib.sha256(other).hexdigest(), wrong)
             with patch("sys.stderr", new_callable=io.StringIO):
-                self.assertEqual(main(["verify", str(root / "handoff"), "--inventory", str(root / "handoff-inventory.json"), "--signature", str(root / "handoff-signature.json"), "--pinned-key", str(wrong)]), 1)
+                self.assertEqual(main(["verify", str(root / "handoff"), "--inventory", str(root / "handoff-inventory.json"), "--signature", str(root / "handoff-signature.json"), "--pinned-key", str(wrong), "--expected-sha256", digest]), 1)

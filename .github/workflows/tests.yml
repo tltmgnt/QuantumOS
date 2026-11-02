@@ -23,6 +23,18 @@ jobs:
         run: python -m quantum_omega validate-quantum examples/quantum_constraints.json --output "${{ runner.temp }}/quantum-matrix-run"
       - name: Verify quantum evidence
         run: python -m quantum_omega verify-run "${{ runner.temp }}/quantum-matrix-run"
+      - name: Validate declared classical limits
+        run: python -m quantum_omega validate-limits examples/classical_limits.json --output "${{ runner.temp }}/classical-limit-run"
+      - name: Verify classical-limit evidence
+        run: python -m quantum_omega verify-run "${{ runner.temp }}/classical-limit-run"
+      - name: Archive classical-limit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: classical-limit-evidence-py${{ matrix.python-version }}
+          path: ${{ runner.temp }}/classical-limit-run/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Archive quantum evidence
         if: always()
         uses: actions/upload-artifact@v4

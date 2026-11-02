@@ -31,6 +31,9 @@ def main():
     quantum = sub.add_parser("validate-quantum", help="Check exact finite density/unitary matrices")
     quantum.add_argument("bundle", type=Path)
     quantum.add_argument("--output", type=Path, required=True)
+    limits = sub.add_parser("validate-limits", help="Check declared reference limits of Laurent expressions")
+    limits.add_argument("bundle", type=Path)
+    limits.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     try:
         if args.command == "run":
@@ -39,11 +42,14 @@ def main():
         elif args.command == "validate-quantum":
             from .quantum import run_validation
             result = run_validation(json.loads(args.bundle.read_text()), args.output)
+        elif args.command == "validate-limits":
+            from .limits import run_validation
+            result = run_validation(json.loads(args.bundle.read_text()), args.output)
         else:
             from .artifacts import verify_run
             result = verify_run(args.directory)
         print(json.dumps(result, sort_keys=True, indent=2, allow_nan=False))
-        if args.command == "validate-quantum" and not result['all_passed']:
+        if args.command in ("validate-quantum", "validate-limits") and not result['all_passed']:
             raise SystemExit(1)
     except (ValueError, KeyError, TypeError, OSError, sqlite3.Error) as error:
         parser.exit(2, f"Research workflow failed: {error}\n")

@@ -1,7 +1,7 @@
 # QUANTUM-Ω
 ## A Topology-Governed Agentic Operating System for Quantum-Gravity Discovery, Explanatory Reasoning, and Scientific Verification
 
-**Research Architecture v1.0 · Reference Software v0.2.1**
+**Research Architecture v1.0 · Reference Software v0.2.2**
 
 > Do not optimize for answers. Optimize for verified explanatory knowledge.
 
@@ -32,6 +32,15 @@ python -m quantum_omega verify-run research-runs/quantum-demo
 ```
 
 Checks Hermiticity, trace, and positive semidefiniteness of density matrices, and unitarity of square operators. Dimensions 1–4 and exact rational complex entries are supported. Results include exact minors or residuals, source fingerprints, and persistent rejection records. Mathematical constraint failures exit with status 1; malformed input exits with status 2. Passing these checks does not validate a physical theory. See [format and scope](docs/QUANTUM_VALIDATION.md).
+
+### Declared classical-limit checks
+
+```sh
+python -m quantum_omega validate-limits examples/classical_limits.json --output research-runs/limit-demo
+python -m quantum_omega verify-run research-runs/limit-demo
+```
+
+Checks exact finite Laurent expressions as a positive dimensionless parameter tends to zero or infinity. Reports preserve cancellations, finite reference mismatches, and divergent leading terms. This checks supplied asymptotic expressions; it does not demonstrate recovery of Einstein's equations. See [limit-check semantics](docs/CLASSICAL_LIMITS.md).
 
 ### Contents
 - [Technical specification](docs/WHITE_PAPER.md): condensed version of the supplied research architecture, preserving its 37-section structure.

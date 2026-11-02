@@ -72,6 +72,15 @@ Source kinds: `literature`, `observation`, `experiment`, `simulation`, `derivati
 
 Sources require `id`, `title`, `locator`, `kind`, `domains`, and `content_sha256`. The hash is a supplied fingerprint, not an independently verified download. Retrieve metadata with `memory.get_source(source_id)`. See [ingestion format](docs/INGESTION.md) for validation and compatibility details.
 
+### Structural gap analysis (TGA-Ω prototype)
+After importing the example bundle, analyze it without writing to the database:
+
+```sh
+python -m quantum_omega.topology --database research-import.sqlite3 --source toy-prediction --target toy-model
+```
+
+The JSON report includes isolated claims, dependency cycle components, asserted contradiction IDs, and an optional directed shortest dependency path. Only `depends_on` and `derived_from` edges participate in paths and cycles; rejected edges are excluded. Hop counts measure unweighted graph structure, not explanatory distance or scientific merit. See [analysis semantics](docs/TOPOLOGY.md).
+
 ### Research loop
 Reality → evidence → representation → gap → conjecture → explanation → criticism → prediction → verification → experiment → knowledge.
 

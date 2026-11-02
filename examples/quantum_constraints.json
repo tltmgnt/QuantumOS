@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "id": "complex-pure-state",
+      "kind": "density_matrix",
+      "matrix": [["1/2", [0, "-1/2"]], [[0, "1/2"], "1/2"]],
+      "sources": ["local:illustrative-quantum-fixture"]
+    },
+    {
+      "id": "bell-state-density",
+      "kind": "density_matrix",
+      "matrix": [["1/2", 0, 0, "1/2"], [0, 0, 0, 0], [0, 0, 0, 0], ["1/2", 0, 0, "1/2"]],
+      "sources": ["local:illustrative-quantum-fixture"]
+    },
+    {
+      "id": "rational-rotation",
+      "kind": "unitary_operator",
+      "matrix": [["3/5", "-4/5"], ["4/5", "3/5"]],
+      "sources": ["local:illustrative-quantum-fixture"]
+    }
+  ]
+}

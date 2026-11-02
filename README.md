@@ -1,7 +1,7 @@
 # QUANTUM-Ω
 ## A Topology-Governed Agentic Operating System for Quantum-Gravity Discovery, Explanatory Reasoning, and Scientific Verification
 
-**Research Architecture v1.0 · Reference Software v0.2.0**
+**Research Architecture v1.0 · Reference Software v0.2.1**
 
 > Do not optimize for answers. Optimize for verified explanatory knowledge.
 
@@ -23,6 +23,15 @@ python -m unittest discover -s tests -v
 The example generates 27 candidate models, retains failures, and produces a local research report, SQLite ledger, and artifact manifest. The simpler pre-holdout model deliberately fails; the surviving quadratic is retained at D4, without a discovery claim. Output directories must be new. Run `python -m quantum_omega` for the original short governance demo.
 
 See the [workflow guide](docs/RESEARCH_WORKFLOW.md) for inputs, outputs, expected results, and limits.
+
+### Quantum matrix validation
+
+```sh
+python -m quantum_omega validate-quantum examples/quantum_constraints.json --output research-runs/quantum-demo
+python -m quantum_omega verify-run research-runs/quantum-demo
+```
+
+Checks Hermiticity, trace, and positive semidefiniteness of density matrices, and unitarity of square operators. Dimensions 1–4 and exact rational complex entries are supported. Results include exact minors or residuals, source fingerprints, and persistent rejection records. Mathematical constraint failures exit with status 1; malformed input exits with status 2. Passing these checks does not validate a physical theory. See [format and scope](docs/QUANTUM_VALIDATION.md).
 
 ### Contents
 - [Technical specification](docs/WHITE_PAPER.md): condensed version of the supplied research architecture, preserving its 37-section structure.

@@ -37,11 +37,38 @@ class Claim:
         if not self.id.strip() or not self.text.strip() or not self.sources or any(not s.strip() for s in self.sources):
             raise ValueError("Claim identifier, text, and provenance are required")
 
+class RelationType(str, Enum):
+    SUPPORTS = "supports"
+    CONTRADICTS = "contradicts"
+    DEPENDS_ON = "depends_on"
+    DERIVED_FROM = "derived_from"
+
+@dataclass(frozen=True)
+class Relation:
+    id: str
+    source: str
+    target: str
+    kind: RelationType
+    evidence: tuple[str, ...]
+    status: EpistemicStatus = EpistemicStatus.CONJECTURED
+
+    def __post_init__(self):
+        if not isinstance(self.kind, RelationType) or not isinstance(self.status, EpistemicStatus):
+            raise ValueError("Use explicit relation type and epistemic status")
+        if any(not isinstance(value, str) or not value.strip() for value in (self.id, self.source, self.target)):
+            raise ValueError("Relation ID and endpoint IDs are required")
+        if not isinstance(self.evidence, tuple) or not self.evidence or any(
+                not isinstance(value, str) or not value.strip() for value in self.evidence):
+            raise ValueError("Immutable evidence references are required")
+        if self.source == self.target:
+            raise ValueError("Self-relations are not supported")
+
 @dataclass
 class Ledger:
     """In-memory hash-linked audit trail. Not an immutable production store."""
     _claims: dict[str, Claim] = field(default_factory=dict, init=False, repr=False)
     _events: list[str] = field(default_factory=list, init=False, repr=False)
+    _relations: dict[str, Relation] = field(default_factory=dict, init=False, repr=False)
 
     @property
     def events(self):
@@ -62,6 +89,30 @@ class Ledger:
             raise ValueError("New research claims must enter at D0 without established status")
         self._claims[claim.id] = claim
         self._append({"event": "register", "id": claim.id, "text": claim.text, "sources": claim.sources, "status": claim.status.value})
+
+    def link(self, relation: Relation):
+        """Record an asserted directed relation without promoting either claim."""
+        if relation.id in self._relations:
+            raise ValueError("Duplicate relation identifier")
+        self.get(relation.source)
+        self.get(relation.target)
+        self._relations[relation.id] = relation
+        self._append({"event": "link", "id": relation.id, "source": relation.source,
+                      "target": relation.target, "kind": relation.kind.value,
+                      "evidence": relation.evidence, "status": relation.status.value})
+        return relation
+
+    def relations(self, claim_id: str, direction="both", kind=None):
+        """Return direct edges in insertion order; no scientific inference occurs."""
+        self.get(claim_id)
+        if direction not in ("incoming", "outgoing", "both"):
+            raise ValueError("Direction must be incoming, outgoing, or both")
+        if kind is not None and not isinstance(kind, RelationType):
+            raise ValueError("Use an explicit relation type")
+        return tuple(r for r in self._relations.values()
+                     if (kind is None or r.kind == kind) and (
+                         (direction in ("outgoing", "both") and r.source == claim_id) or
+                         (direction in ("incoming", "both") and r.target == claim_id)))
 
     def advance(self, claim_id: str, target: Stage, artifact: str, reviewer: str, producer: str):
         from dataclasses import replace

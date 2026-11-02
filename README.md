@@ -59,6 +59,19 @@ with ScientificMemory("graph.sqlite3") as memory:
 
 Relations are user-supplied assertions, not inferred scientific facts. Supported types are `supports`, `contradicts`, `depends_on`, and `derived_from`. Queries return direct edges in insertion order and can filter by `RelationType`. Self-links, missing endpoints, duplicate relation IDs, and missing evidence references are rejected. Cycles between distinct claims are permitted and do not prove valid derivations. Existing databases remain readable; old software cannot replay newly written link events. Ontology ingestion, inference, and topological gap analysis remain future work.
 
+### Structured source ingestion
+Import a local, versioned JSON bundle into a new database:
+
+```sh
+python -m quantum_omega.ingestion examples/research_bundle.json --database research-import.sqlite3
+```
+
+The sample contains illustrative fixtures, not scientific evidence. Reimporting duplicate IDs is rejected. Bundles atomically register source metadata, D0 claims, and typed relations. Claim sources and relation evidence must resolve to registered source IDs; references may reuse sources imported earlier. Unknown fields, source types, domain tags, statuses, and schema versions are rejected. No network requests occur.
+
+Source kinds: `literature`, `observation`, `experiment`, `simulation`, `derivation`. Controlled domains: `mathematics`, `quantum`, `gravity`, `information`, `computation`. This is an initial vocabulary, not a complete physics ontology.
+
+Sources require `id`, `title`, `locator`, `kind`, `domains`, and `content_sha256`. The hash is a supplied fingerprint, not an independently verified download. Retrieve metadata with `memory.get_source(source_id)`. See [ingestion format](docs/INGESTION.md) for validation and compatibility details.
+
 ### Research loop
 Reality → evidence → representation → gap → conjecture → explanation → criticism → prediction → verification → experiment → knowledge.
 

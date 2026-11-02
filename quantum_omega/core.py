@@ -69,6 +69,7 @@ class Ledger:
     _claims: dict[str, Claim] = field(default_factory=dict, init=False, repr=False)
     _events: list[str] = field(default_factory=list, init=False, repr=False)
     _relations: dict[str, Relation] = field(default_factory=dict, init=False, repr=False)
+    _sources: dict = field(default_factory=dict, init=False, repr=False)
 
     @property
     def events(self):
@@ -89,6 +90,22 @@ class Ledger:
             raise ValueError("New research claims must enter at D0 without established status")
         self._claims[claim.id] = claim
         self._append({"event": "register", "id": claim.id, "text": claim.text, "sources": claim.sources, "status": claim.status.value})
+
+    def add_source(self, source):
+        from .ingestion import ScientificSource
+        if not isinstance(source, ScientificSource):
+            raise ValueError("Expected a validated scientific source")
+        if source.id in self._sources:
+            raise ValueError("Duplicate source identifier")
+        self._sources[source.id] = source
+        self._append({"event": "source", "id": source.id, "title": source.title,
+                      "locator": source.locator, "kind": source.kind.value,
+                      "domains": [d.value for d in source.domains],
+                      "content_sha256": source.content_sha256})
+        return source
+
+    def get_source(self, source_id):
+        return self._sources[source_id]
 
     def link(self, relation: Relation):
         """Record an asserted directed relation without promoting either claim."""

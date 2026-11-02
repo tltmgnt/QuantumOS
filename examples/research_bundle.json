@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "source:toy",
+      "title": "Illustrative local research notes",
+      "locator": "local:toy-notes",
+      "kind": "derivation",
+      "domains": [
+        "mathematics",
+        "quantum"
+      ],
+      "content_sha256": "d650718a656c4c979b3ab590a0d195bf10e373e621781907e919ee9f059c3a7f"
+    }
+  ],
+  "claims": [
+    {
+      "id": "toy-model",
+      "text": "Illustrative model conjecture",
+      "sources": [
+        "source:toy"
+      ],
+      "status": "Conjectured"
+    },
+    {
+      "id": "toy-prediction",
+      "text": "Illustrative prediction conjecture",
+      "sources": [
+        "source:toy"
+      ],
+      "status": "Speculative"
+    }
+  ],
+  "relations": [
+    {
+      "id": "toy-derivation",
+      "source": "toy-prediction",
+      "target": "toy-model",
+      "kind": "derived_from",
+      "evidence": [
+        "source:toy"
+      ],
+      "status": "Conjectured"
+    }
+  ]
+}

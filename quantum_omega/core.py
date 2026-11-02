@@ -51,6 +51,10 @@ class Ledger:
         previous = sha256(self._events[-1].encode()).hexdigest() if self._events else None
         self._events.append(json.dumps({"previous": previous, **payload}, sort_keys=True))
 
+    def get(self, claim_id: str):
+        """Return the immutable current claim record."""
+        return self._claims[claim_id]
+
     def register(self, claim: Claim):
         if claim.id in self._claims:
             raise ValueError("Duplicate claim identifier")

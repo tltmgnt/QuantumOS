@@ -14,7 +14,7 @@ The supplied paper states twelve principal subsystems but enumerates fifteen spe
 | Criticism | Red-team and counterfactual analysis | Not implemented |
 | Competition/planner | Rank theories and next actions | Action ranking only |
 | Experiment interface | Distinguishing tests under budget | Not implemented |
-| Memory/ledger | Versioned history and provenance | In-memory hash-linked events |
+| Memory/ledger | Versioned history and provenance | In-memory ledger plus transactional SQLite event history |
 
 Proposed event envelope: event ID, run ID, claim ID, actor identity, timestamp, event type, input artifact hashes, output artifact hashes, software/model versions, epistemic status, and human authorization reference when required. This envelope is a target interface, not implemented serialization.
 

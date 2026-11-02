@@ -28,15 +28,23 @@ def main():
     run.add_argument("--output", type=Path, required=True)
     verify = sub.add_parser("verify-run", help="Verify run artifact checksums and database integrity")
     verify.add_argument("directory", type=Path)
+    quantum = sub.add_parser("validate-quantum", help="Check exact finite density/unitary matrices")
+    quantum.add_argument("bundle", type=Path)
+    quantum.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     try:
         if args.command == "run":
             from .workflow import run_research
             result = run_research(json.loads(args.task.read_text()), args.output)
+        elif args.command == "validate-quantum":
+            from .quantum import run_validation
+            result = run_validation(json.loads(args.bundle.read_text()), args.output)
         else:
             from .artifacts import verify_run
             result = verify_run(args.directory)
         print(json.dumps(result, sort_keys=True, indent=2, allow_nan=False))
+        if args.command == "validate-quantum" and not result['all_passed']:
+            raise SystemExit(1)
     except (ValueError, KeyError, TypeError, OSError, sqlite3.Error) as error:
         parser.exit(2, f"Research workflow failed: {error}\n")
 

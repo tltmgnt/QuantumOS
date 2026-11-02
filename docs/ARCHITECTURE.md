@@ -9,7 +9,7 @@ The supplied paper states twelve principal subsystems but enumerates fifteen spe
 | Gap engine | Classify missing mathematical/physical/evidential links | Structural review prompts: isolates, dependency cycles, asserted contradictions |
 | Agent orchestration | Fifteen specialist research roles | Bounded local workflow; specialist AI agents remain unimplemented |
 | Theory factory | Assumptions, models, predictions, falsifiers | Exact-rational polynomial factory with bounded search |
-| Validation | Mathematics, quantum, gravity, independent review | Sequential stages, Q[x] checks, alternate evaluator; quantum/GR and independent review pending |
+| Validation | Mathematics, quantum, gravity, independent review | Sequential stages, Q[x] checks, exact finite density/unitary checks; general quantum/GR and independent review pending |
 | Computation | Symbolic, numerical, circuit, tensor adapters | Exact polynomial evaluation and coefficient-removal simulations |
 | Criticism | Red-team and counterfactual analysis | Exact sample counterexamples, assumption-removal probes, persisted rejection |
 | Competition/planner | Rank theories and next actions | Complexity ranking, frozen holdout scores, budgeted action policy |

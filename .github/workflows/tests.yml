@@ -19,6 +19,18 @@ jobs:
         run: python -m quantum_omega run examples/polynomial_research.json --output "${{ runner.temp }}/quantum-omega-run"
       - name: Verify research artifacts
         run: python -m quantum_omega verify-run "${{ runner.temp }}/quantum-omega-run"
+      - name: Validate exact quantum matrices
+        run: python -m quantum_omega validate-quantum examples/quantum_constraints.json --output "${{ runner.temp }}/quantum-matrix-run"
+      - name: Verify quantum evidence
+        run: python -m quantum_omega verify-run "${{ runner.temp }}/quantum-matrix-run"
+      - name: Archive quantum evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quantum-evidence-py${{ matrix.python-version }}
+          path: ${{ runner.temp }}/quantum-matrix-run/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Archive research evidence
         if: always()
         uses: actions/upload-artifact@v4

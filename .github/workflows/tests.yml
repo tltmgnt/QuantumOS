@@ -15,3 +15,15 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: python -m unittest discover -s tests -v
       - run: python -m quantum_omega
+      - name: Run full research workflow
+        run: python -m quantum_omega run examples/polynomial_research.json --output "${{ runner.temp }}/quantum-omega-run"
+      - name: Verify research artifacts
+        run: python -m quantum_omega verify-run "${{ runner.temp }}/quantum-omega-run"
+      - name: Archive research evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: research-evidence-py${{ matrix.python-version }}
+          path: ${{ runner.temp }}/quantum-omega-run/
+          if-no-files-found: warn
+          retention-days: 14

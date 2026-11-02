@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "title": "Synthetic polynomial rediscovery with a deliberately failing simple baseline",
+  "coefficient_values": [-1, 0, 1],
+  "max_degree": 2,
+  "training": [{"x": 0, "y": 0}, {"x": 1, "y": 1}],
+  "holdout": [{"x": 2, "y": 4}, {"x": 3, "y": 9}],
+  "probes": [-1, 2, 3],
+  "action_budget": 3,
+  "experiment_budget": 1
+}

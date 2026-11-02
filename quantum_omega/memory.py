@@ -57,6 +57,8 @@ class ScientificMemory:
                 ledger.link(Relation(event['id'], event['source'], event['target'],
                                      RelationType(event['kind']), tuple(event['evidence']),
                                      EpistemicStatus(event['status'])))
+            elif event['event'] == 'reject':
+                ledger.reject(event['id'], event['reason'], event['artifact'])
             elif event['event'] == 'advance':
                 ledger.advance(event['id'], Stage(event['stage']), event['artifact'],
                                event['reviewer'], event['producer'])
@@ -88,6 +90,10 @@ class ScientificMemory:
         ledger, _ = self._replay()
         return ledger.claims(), ledger.all_relations()
 
+    def sources(self):
+        ledger, _ = self._replay()
+        return ledger.sources()
+
     def get_source(self, source_id):
         ledger, _ = self._replay()
         return ledger.get_source(source_id)
@@ -114,6 +120,9 @@ class ScientificMemory:
         self._write(lambda ledger: ledger.register(claim))
         return claim
 
+    def reject(self, claim_id, reason, artifact):
+        return self._write(lambda ledger: ledger.reject(claim_id, reason, artifact))
+
     def advance(self, claim_id, target, artifact, reviewer, producer):
         return self._write(lambda ledger: ledger.advance(claim_id, target, artifact, reviewer, producer))
 
@@ -139,5 +148,5 @@ class ScientificMemory:
         events = [json.loads(payload) for payload in ledger.events]
         ledger.get(claim_id)
         return tuple(event for event in events if (
-            event['event'] in ('register', 'advance') and event['id'] == claim_id) or (
+            event['event'] in ('register', 'advance', 'reject') and event['id'] == claim_id) or (
             event['event'] == 'link' and claim_id in (event['source'], event['target'])))

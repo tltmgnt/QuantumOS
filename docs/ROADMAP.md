@@ -1,5 +1,7 @@
 # Research roadmap
 
+The original acceptance criteria below remain in force. An end-to-end bounded reference workflow now spans the software interfaces; this is not scientific completion of all phases. See [milestone status](MILESTONES.md) and [workflow guide](RESEARCH_WORKFLOW.md).
+
 ## Phase 1: Scientific Knowledge Engine
 Literature ingestion, ontology, knowledge graph, provenance, epistemic classification. Accept when a sourced claim can be traced to versioned inputs.
 

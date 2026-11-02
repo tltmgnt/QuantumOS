@@ -5,6 +5,7 @@ import re
 
 from .gap_replay import replay_evidence
 from .gap_quality_report import build_reviewer_quality_report
+from .gap_reconcile import reconcile_reviewer_labels
 
 def replay_with_reviewer_quality(protocol, priority_report, evidence_manifest,
                                  label_bytes, reviewer_bytes, reviewer_sha256,
@@ -24,6 +25,11 @@ def replay_with_reviewer_quality(protocol, priority_report, evidence_manifest,
     if not isinstance(reviewer_data, dict) or set(reviewer_data) != {"submissions", "adjudications"}:
         raise ValueError("Expected submissions and adjudications")
     frozen = replay_evidence(protocol, priority_report, evidence_manifest, label_bytes)
+    try:
+        frozen_labels = json.loads(label_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError("Frozen labels must be UTF-8 JSON") from exc
+    reconciliation = reconcile_reviewer_labels(frozen_labels, reviewer_data)
     quality = build_reviewer_quality_report(reviewer_data["submissions"],
                                           reviewer_data["adjudications"], confidence)
     result = {
@@ -32,9 +38,10 @@ def replay_with_reviewer_quality(protocol, priority_report, evidence_manifest,
         "evaluation_replay": frozen,
         "reviewer_data_sha256": actual,
         "reviewer_quality": quality,
+        "label_reconciliation": reconciliation,
         "external_reviewer_independence_verified": False,
-        "reviewer_label_alignment_verified": False,
-        "note": "Reviewer data has separate byte integrity only; it is not proven to match the frozen evaluation labels.",
+        "reviewer_label_alignment_verified": True,
+        "note": "Reviewer votes and adjudications structurally reconcile to frozen labels; reviewer independence remains unverified.",
     }
     result["sha256"] = sha256(json.dumps(result, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
     return result

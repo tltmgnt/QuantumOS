@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "id": "illustrative-weak-field-ratio",
+      "parameter": "epsilon = length_scale / radius",
+      "approach": "zero_positive",
+      "baseline": 1,
+      "reference": 1,
+      "corrections": [{"power": 2, "coefficient": "1/10"}, {"power": 3, "coefficient": "-1/5"}],
+      "sources": ["local:synthetic-normalized-ratio-not-a-gravity-theory"]
+    },
+    {
+      "id": "illustrative-large-radius-ratio",
+      "parameter": "scaled_radius",
+      "approach": "positive_infinity",
+      "baseline": 1,
+      "reference": 1,
+      "corrections": [{"power": -2, "coefficient": "3/5"}],
+      "sources": ["local:synthetic-normalized-ratio-not-a-gravity-theory"]
+    }
+  ]
+}

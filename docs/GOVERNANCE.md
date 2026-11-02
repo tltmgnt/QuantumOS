@@ -10,3 +10,5 @@ SQLite scientific memory now provides transactional persistence and retained-cha
 Claim rejection, invalidation, branching, recovery, access control, and experiment execution are future work. Do not use this prototype as an autonomous discovery authority.
 
 Relations have their own epistemic labels and evidence references. A supports or derived_from edge is an asserted relationship; it does not validate evidence, establish causality, or promote the endpoint claims. Relationship creation is transactional, checked against existing claims, and included in both endpoints’ provenance histories.
+
+Structured ingestion requires registered source metadata for every imported claim source and relation evidence reference. Source fingerprints are supplied by the caller and are not checked against fetched content. Imported claims enter D0 with Speculative or Conjectured status only. Existing lower-level registration APIs continue to accept free-form references for compatibility. No automatic scientific validity or credibility is inferred from a successful import.

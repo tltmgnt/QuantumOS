@@ -4,6 +4,7 @@ from hashlib import sha256
 import json
 import sqlite3
 from .core import Claim, EpistemicStatus, Ledger, Relation, RelationType, Stage
+from .ingestion import Domain, ScientificSource, SourceKind, parse_bundle
 
 
 class ScientificMemory:
@@ -42,7 +43,10 @@ class ScientificMemory:
             if sequence != expected or parent != previous or digest != self._hash(sequence, timestamp, payload, parent):
                 raise ValueError('Scientific memory integrity check failed')
             event = json.loads(payload)
-            if event['event'] == 'register':
+            if event['event'] == 'source':
+                ledger.add_source(ScientificSource(event['id'], event['title'], event['locator'],
+                    SourceKind(event['kind']), tuple(Domain(d) for d in event['domains']), event['content_sha256']))
+            elif event['event'] == 'register':
                 ledger.register(Claim(event['id'], event['text'], tuple(event['sources']),
                                       status=EpistemicStatus(event['status'])))
             elif event['event'] == 'link':
@@ -61,18 +65,40 @@ class ScientificMemory:
         self._db.execute('BEGIN IMMEDIATE')
         try:
             ledger, parent = self._replay()
+            offset = len(ledger.events)
             result = operation(ledger)
-            payload = ledger.events[-1]
-            sequence = len(ledger.events)
-            timestamp = datetime.now(timezone.utc).isoformat()
-            digest = self._hash(sequence, timestamp, payload, parent)
-            self._db.execute('INSERT INTO events VALUES (?, ?, ?, ?, ?)',
-                             (sequence, timestamp, payload, parent, digest))
+            for sequence, payload in enumerate(ledger.events[offset:], offset + 1):
+                timestamp = datetime.now(timezone.utc).isoformat()
+                digest = self._hash(sequence, timestamp, payload, parent)
+                self._db.execute('INSERT INTO events VALUES (?, ?, ?, ?, ?)',
+                                 (sequence, timestamp, payload, parent, digest))
+                parent = digest
             self._db.execute('COMMIT')
             return result
         except BaseException:
             self._db.execute('ROLLBACK')
             raise
+
+    def get_source(self, source_id):
+        ledger, _ = self._replay()
+        return ledger.get_source(source_id)
+
+    def ingest(self, bundle):
+        """Atomically ingest a versioned local bundle with registered provenance."""
+        sources, claims, relations = parse_bundle(bundle)
+        def apply(ledger):
+            for source in sources:
+                ledger.add_source(source)
+            for claim in claims:
+                for source_id in claim.sources:
+                    ledger.get_source(source_id)
+                ledger.register(claim)
+            for relation in relations:
+                for evidence_id in relation.evidence:
+                    ledger.get_source(evidence_id)
+                ledger.link(relation)
+            return {"sources": len(sources), "claims": len(claims), "relations": len(relations)}
+        return self._write(apply)
 
     def register(self, claim):
         """Atomically validate and persist a new D0 claim."""
@@ -104,5 +130,5 @@ class ScientificMemory:
         events = [json.loads(payload) for payload in ledger.events]
         ledger.get(claim_id)
         return tuple(event for event in events if (
-            event['event'] != 'link' and event['id'] == claim_id) or (
+            event['event'] in ('register', 'advance') and event['id'] == claim_id) or (
             event['event'] == 'link' and claim_id in (event['source'], event['target'])))

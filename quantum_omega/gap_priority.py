@@ -18,6 +18,22 @@ class PriorityWeights:
                for v in vars(self).values()):
             raise ValueError("Priority weights must be finite and nonnegative")
 
+def _analyze_ledger(ledger):
+    from .topology import _graph, _components, DEPENDENCIES
+    claims, relations = ledger.claims(), ledger.all_relations()
+    graph = _graph(claims, relations, DEPENDENCIES)
+    active = [r for r in relations if r.status != EpistemicStatus.REJECTED]
+    incident = {node for r in active for node in (r.source, r.target)}
+    return {
+        'schema_version': 1,
+        'interpretation': 'Structural review prompts only; not scientific validation or an explanatory-distance metric.',
+        'claim_count': len(claims),
+        'relation_count': len(relations),
+        'isolated_claims': sorted(c.id for c in claims if c.id not in incident),
+        'dependency_cycle_components': [c for c in _components(graph) if len(c) > 1],
+        'asserted_contradictions': sorted(r.id for r in active if r.kind == RelationType.CONTRADICTS),
+    }
+
 def rank_gaps(memory, weights=PriorityWeights()):
     """Read-only, auditable heuristic on asserted edges and claim stages.
 
@@ -26,8 +42,11 @@ def rank_gaps(memory, weights=PriorityWeights()):
     """
     if not isinstance(weights, PriorityWeights):
         raise TypeError("Expected PriorityWeights")
-    claims, relations = memory.snapshot()
-    structural = analyze(memory)
+    if hasattr(memory, 'snapshot'):
+        claims, relations = memory.snapshot()
+    else:
+        claims, relations = memory.claims(), memory.all_relations()
+    structural = analyze(memory) if hasattr(memory, 'snapshot') else _analyze_ledger(memory)
     active = [r for r in relations if r.status != EpistemicStatus.REJECTED]
     incident = {node for r in active for node in (r.source, r.target)}
     rows = []

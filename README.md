@@ -1,28 +1,35 @@
 # QUANTUM-Ω
 ## A Topology-Governed Agentic Operating System for Quantum-Gravity Discovery, Explanatory Reasoning, and Scientific Verification
 
-**Version 1.0 — Research Architecture**
+**Research Architecture v1.0 · Reference Software v0.2.0**
 
 > Do not optimize for answers. Optimize for verified explanatory knowledge.
 
 QUANTUM-Ω proposes a research operating system for discovering, formalizing, criticizing, simulating, verifying, and comparing candidate explanations. It does not claim to solve quantum gravity.
 
-This repository contains a dependency-free Python governance prototype and a condensed technical specification based on the supplied white paper. The prototype manages claim stages, records provenance, and ranks proposed actions. It does not implement autonomous scientific agents, formal proofs, quantum simulations, or experimental validation.
+This repository contains a dependency-free end-to-end reference implementation in a bounded exact-rational polynomial domain, alongside a condensed technical specification based on the supplied white paper. It connects source ingestion, knowledge graphs, structural gap analysis, theory generation, exact algebra and criticism, budgeted action planning, holdout evaluation, experiment proposals, and persistent scientific memory.
+
+The reference workflow is a software demonstration. It does not implement a general quantum-gravity solver, independently verified scientific discovery, general theorem proving, or laboratory execution. [Milestone status](docs/MILESTONES.md) distinguishes implemented interfaces from scientific acceptance that remains pending.
 
 ### Quick start
 Requires Python 3.11 or later. From this directory:
 
 ```sh
-python -m quantum_omega
+python -m quantum_omega run examples/polynomial_research.json --output research-runs/demo
+python -m quantum_omega verify-run research-runs/demo
 python -m unittest discover -s tests -v
 ```
+
+The example generates 27 candidate models, retains failures, and produces a local research report, SQLite ledger, and artifact manifest. The simpler pre-holdout model deliberately fails; the surviving quadratic is retained at D4, without a discovery claim. Output directories must be new. Run `python -m quantum_omega` for the original short governance demo.
+
+See the [workflow guide](docs/RESEARCH_WORKFLOW.md) for inputs, outputs, expected results, and limits.
 
 ### Contents
 - [Technical specification](docs/WHITE_PAPER.md): condensed version of the supplied research architecture, preserving its 37-section structure.
 - [Architecture](docs/ARCHITECTURE.md): proposed services, interfaces, and implementation boundaries.
 - [Roadmap](docs/ROADMAP.md): eight phases and acceptance criteria.
 - [Scientific governance](docs/GOVERNANCE.md): epistemic status, evidence, independent review, and limitations.
-- `quantum_omega/`: runnable claim, ledger, and planner primitives.
+- `quantum_omega/`: ingestion, graph analysis, theory factory, verification, planner, benchmark, experiment design, and workflow modules.
 - `tests/`: governance and planner regression checks.
 
 ### Persistent scientific memory

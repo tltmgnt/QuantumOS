@@ -110,6 +110,9 @@ class Ledger:
                       "content_sha256": source.content_sha256})
         return source
 
+    def sources(self):
+        return tuple(self._sources.values())
+
     def get_source(self, source_id):
         return self._sources[source_id]
 
@@ -137,9 +140,22 @@ class Ledger:
                          (direction in ("outgoing", "both") and r.source == claim_id) or
                          (direction in ("incoming", "both") and r.target == claim_id)))
 
+    def reject(self, claim_id: str, reason: str, artifact: str):
+        from dataclasses import replace
+        current = self.get(claim_id)
+        if current.status == EpistemicStatus.REJECTED:
+            raise ValueError("Claim is already rejected")
+        if any(not isinstance(v, str) or not v.strip() for v in (reason, artifact)):
+            raise ValueError("Rejection reason and artifact are required")
+        self._claims[claim_id] = replace(current, status=EpistemicStatus.REJECTED)
+        self._append({"event": "reject", "id": claim_id, "reason": reason, "artifact": artifact})
+        return self.get(claim_id)
+
     def advance(self, claim_id: str, target: Stage, artifact: str, reviewer: str, producer: str):
         from dataclasses import replace
         current = self._claims[claim_id]
+        if current.status == EpistemicStatus.REJECTED:
+            raise ValueError("Rejected claims cannot be promoted")
         if not isinstance(target, Stage) or int(target) != int(current.stage) + 1:
             raise ValueError("Discovery stages must advance sequentially")
         if not artifact.strip() or not reviewer.strip() or not producer.strip():

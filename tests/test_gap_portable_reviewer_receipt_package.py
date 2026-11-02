@@ -38,7 +38,9 @@ class PortableReviewerReceiptPackageTests(unittest.TestCase):
 
     def test_package_replays_without_embedding_trust_anchor(self):
         self.assertNotIn("public_key_hex", json.dumps(self.package))
-        self.assertNotIn(self.digest, json.dumps(self.package["signature"]))
+        self.assertEqual(self.package["signature"]["public_key_sha256"], self.digest)
+        self.assertFalse(self.package["trusted_key_embedded"])
+        self.assertFalse(self.package["expected_fingerprint_embedded"])
         result = verify_portable_reviewer_receipt_package(
             self.handoff, self.package, self.pin, self.digest
         )

@@ -13,6 +13,8 @@ from .memory import ScientificMemory
 from .planner import plan
 from .theory import generate_theories, rational
 from .topology import analyze
+from .gap_priority import rank_gaps, propose_review_actions
+from .gap_benchmark import evaluate_fixture
 from .verification import counterfactuals, validate
 
 
@@ -146,6 +148,21 @@ def _run(task, models, training, holdout, probes, artifacts):
                 report['blind_research_acceptance'] = False
             completed.add(action_name)
         record('topology.json',analyze(memory),memory)
+        gap_report = rank_gaps(memory)
+        record('gap-priority.json', gap_report, memory)
+        review_plan = propose_review_actions(gap_report, report['budget_remaining'])
+        record('gap-review-plan.json', review_plan, memory)
+        synthetic_benchmark = evaluate_fixture()
+        if not synthetic_benchmark['passed']:
+            raise ValueError('TGA synthetic benchmark failed')
+        record('gap-benchmark.json', synthetic_benchmark, memory)
+        report['tga_review_priority'] = {
+            'heuristic_only': True,
+            'ranked_claim_count': len(gap_report['ranked_claims']),
+            'selected_review_action': review_plan['selected_action'],
+            'synthetic_benchmark_passed': synthetic_benchmark['passed'],
+            'report_sha256': gap_report['sha256'],
+        }
         report['surviving_theories'] = [model.id for model in survivors]
         report['candidate_count'] = len(models)
         report['claim_count'] = len(memory.snapshot()[0])

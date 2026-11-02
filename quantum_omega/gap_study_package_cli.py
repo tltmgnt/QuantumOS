@@ -8,14 +8,16 @@ import sys
 from pathlib import Path
 
 from .gap_study_package import validate_study_package
+from .gap_study_review import summarize_study_package
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("package", type=Path, help="Directory with six required JSON input files")
     parser.add_argument("--output", type=Path, help="Create-only result JSON path")
+    parser.add_argument("--summary", action="store_true", help="Output compact audit summary instead of full replay")
     args = parser.parse_args(argv)
     try:
-        result = validate_study_package(args.package)
+        result = summarize_study_package(args.package) if args.summary else validate_study_package(args.package)
         payload = json.dumps(result, sort_keys=True, indent=2, allow_nan=False) + "\n"
         if args.output is not None:
             with args.output.open("x", encoding="utf-8") as stream:

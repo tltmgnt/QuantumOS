@@ -1,6 +1,6 @@
 # Topology compatibility and curriculum v2 — QuantumOS
 
-Version 2 adapts the explicit-molecular-graph teaching pattern to this repository's actual role. This is documentation and a learning/decision framework; it introduces no mathematical engine, runtime dependency or operational permission.
+The verified edition of version 2 adapts the explicit-molecular-graph teaching pattern to this repository's actual role. This edition adds executable learning checks and reviewed answer keys. It does not introduce a new topology engine or grant operational permission.
 
 ## Repository decision
 
@@ -40,47 +40,54 @@ Prerequisites: basic programming, sets, functions and graph vocabulary. Work in 
 | 5. Comparison | Justify mathematical necessity and cost. | Complete the six-criterion card for the existing approach and one proposed alternative; record unknowns honestly. | Evidence-backed recommendation with baseline and explicit veto conditions. |
 | 6. Reproduction | Communicate the bounded result. | Reproduce the capstone using existing offline fixtures and record software version, inputs, outputs and limitations. | Reviewable notebook or report distinguishing computation, replay, independent evaluation and authorization. |
 
-## Source-linked reading laboratory
+## Worked reasoning and source explanation
 
-The table is a guided selection of source lines, not an assertion that the whole repository is covered. Line numbers refer to the inspected source blob `8e095f08260145af1036c297471cbfb0d7200a9d` in [quantum_omega/core.py](../../quantum_omega/core.py). Recheck anchors after source changes.
+Ledger.advance() requires adjacent stages, so a conjecture cannot jump to EMPIRICALLY_SUPPORTED. Early recorded stages may use the same producer/reviewer declaration, but INDEPENDENTLY_VERIFIED requires normalized distinct identities. Even that is declared separation, not identity authentication. The returned stage changes while the claim's epistemic label remains unchanged, preventing stage numbering from silently becoming a truth judgment.
 
-| Line | Statement | Learning check |
+Read the [inspected source](https://github.com/tltmgnt/QuantumOS/blob/172c1d9197fe1887513699bffbfafb7645d62ed1/quantum_omega/core.py) alongside the [executable answer key](../../curriculum/lab.py). The source link is pinned to the inspected revision; the lab and any explicitly described fix are in this change.
+
+## Run the worked laboratory
+
+From the repository root, with Python 3.12 (the recorded local version is 3.12.14):
+
+```sh
+python curriculum/lab.py --verify
+```
+
+The lab checks **6 explicit expectations** against existing repository functions. It prints a JSON case report and exits nonzero on a wrong result. `--verify` additionally compares the entire case report with [expected.json](../../curriculum/expected.json). Read the input and predict each result before opening the answer key. No API account, credentials, model download, trading action or equipment connection is needed.
+
+| Checkpoint | Expected answer |
+| --- | --- |
+| no stage skipping | `"ValueError"` |
+| failed transition appends no stage event | `1` |
+| no source-free claim | `"ValueError"` |
+| same normalized reviewer is not separate | `"ValueError"` |
+| declared separate reviewer permits recorded stage | `5` |
+| stage advancement does not change epistemic label | `"Speculative"` |
+
+The comparisons above encode independently specified small examples and contract expectations; a passing answer key is not evidence of complete domain correctness. The original functions and their existing test suites remain the authority for broader supported contracts.
+
+## Learner tasks and assessment rubric
+
+1. Before running the lab, predict every expected answer and derive one numeric result or state transition by hand.
+2. Explain the worked reasoning above using the referenced source, including the rejected or counterexample case.
+3. Add a new valid example and a nearby failing example. Explain which assumption changes, then compare against the existing implementation. For concept/static labs, keep the result explicitly at that level.
+4. Complete the scorecard for a proposed extension and a simpler baseline. Leave measurements unknown until collected; a task that the baseline already solves is not evidence for additional topology.
+
+| Competency | Points | Full-credit evidence |
 | --- | --- | --- |
-| [8](../../quantum_omega/core.py#L8) | `class EpistemicStatus(str, Enum):` | State the input/output contract and trace one normal and one failing case. |
-| [17](../../quantum_omega/core.py#L17) | `class Stage(IntEnum):` | State the input/output contract and trace one normal and one failing case. |
-| [27](../../quantum_omega/core.py#L27) | `class Claim:` | State the input/output contract and trace one normal and one failing case. |
-| [34](../../quantum_omega/core.py#L34) | `def __post_init__(self):` | State the input/output contract and trace one normal and one failing case. |
-| [36](../../quantum_omega/core.py#L36) | `raise ValueError("Use explicit stage and epistemic enums")` | Construct the triggering input and explain why rejection preserves the contract. |
-| [38](../../quantum_omega/core.py#L38) | `raise ValueError("Claim identifier, text, and provenance are required")` | Construct the triggering input and explain why rejection preserves the contract. |
-| [40](../../quantum_omega/core.py#L40) | `class RelationType(str, Enum):` | State the input/output contract and trace one normal and one failing case. |
-| [47](../../quantum_omega/core.py#L47) | `class Relation:` | State the input/output contract and trace one normal and one failing case. |
-| [55](../../quantum_omega/core.py#L55) | `def __post_init__(self):` | State the input/output contract and trace one normal and one failing case. |
-| [57](../../quantum_omega/core.py#L57) | `raise ValueError("Use explicit relation type and epistemic status")` | Construct the triggering input and explain why rejection preserves the contract. |
-| [59](../../quantum_omega/core.py#L59) | `raise ValueError("Relation ID and endpoint IDs are required")` | Construct the triggering input and explain why rejection preserves the contract. |
-| [62](../../quantum_omega/core.py#L62) | `raise ValueError("Immutable evidence references are required")` | Construct the triggering input and explain why rejection preserves the contract. |
-| [64](../../quantum_omega/core.py#L64) | `raise ValueError("Self-relations are not supported")` | Construct the triggering input and explain why rejection preserves the contract. |
-| [67](../../quantum_omega/core.py#L67) | `class Ledger:` | State the input/output contract and trace one normal and one failing case. |
-| [75](../../quantum_omega/core.py#L75) | `def events(self):` | State the input/output contract and trace one normal and one failing case. |
-| [76](../../quantum_omega/core.py#L76) | `return tuple(self._events)` | Predict the returned value and distinguish a computed result from authorization. |
-| [78](../../quantum_omega/core.py#L78) | `def _append(self, payload):` | State the input/output contract and trace one normal and one failing case. |
-| [82](../../quantum_omega/core.py#L82) | `def claims(self):` | State the input/output contract and trace one normal and one failing case. |
-| [83](../../quantum_omega/core.py#L83) | `return tuple(self._claims.values())` | Predict the returned value and distinguish a computed result from authorization. |
-| [85](../../quantum_omega/core.py#L85) | `def all_relations(self):` | State the input/output contract and trace one normal and one failing case. |
-| [86](../../quantum_omega/core.py#L86) | `return tuple(self._relations.values())` | Predict the returned value and distinguish a computed result from authorization. |
-| [88](../../quantum_omega/core.py#L88) | `def get(self, claim_id: str):` | State the input/output contract and trace one normal and one failing case. |
-| [90](../../quantum_omega/core.py#L90) | `return self._claims[claim_id]` | Predict the returned value and distinguish a computed result from authorization. |
-| [92](../../quantum_omega/core.py#L92) | `def register(self, claim: Claim):` | State the input/output contract and trace one normal and one failing case. |
-## Assessment and verification
+| Model and contract | 0–3 | Correct objects, relation direction, labels/units, input bounds and missingness. |
+| Derivation and trace | 0–3 | Hand derivation agrees with the specified fixture; source steps explain why. |
+| Counterexample | 0–3 | New failing/boundary case has a justified expected result; rejection is not suppressed. |
+| Scope and necessity | 0–3 | Distinguishes software behavior from validation and compares an explicit simpler alternative. |
 
-A learner must explain the model, trace the capstone, identify a counterexample and state the scope boundary. Assess these four competencies equally; a numerical score cannot compensate for an unsupported scientific or operational claim.
+Completion requires at least 10/12 and no zero in scope/necessity. A runnable answer key alone is not evidence that a learner achieved this competency. No learner-outcome study has been performed.
 
-Relevant existing checks:
+## Verification evidence and maintenance
 
-- [tests/test_core.py](../../tests/test_core.py)
-- [tests/test_gap_adjudication.py](../../tests/test_gap_adjudication.py)
-- [tests/test_gap_agreement.py](../../tests/test_gap_agreement.py)
+[VALIDATION.json](../../curriculum/VALIDATION.json) records the inspected base revision, local Python version, source/fixture hashes, lab/answer hashes, case count and exit codes. All cases were executed locally. An in-memory copy with a deliberately wrong comparison was also executed and returned nonzero, checking that the grading failure path is active. Those injected failures are harness checks, not scientific adversarial evaluations.
 
-Follow [README](../../README.md) for environment and installed-package instructions. Read scripts before execution; source-reading exercises do not authorize provider calls, model downloads, live orders, hardware actions or messages. Synthetic fixtures establish software behavior only. This documentation change does not report those exercises as already executed.
+The dedicated [curriculum workflow](../../.github/workflows/curriculum.yml) runs the same `--verify` command on relevant pull-request changes. CI status is reported by GitHub; the local record does not assert that remote CI passed. Existing full-suite and installed-package requirements still apply to runtime changes. When source or fixture semantics change, inspect the diff and rederive answers before updating expected.json. Never regenerate expected answers solely to silence a failure. Refresh the local validation record after an actual run; do not rewrite its recorded base revision as if a new run occurred.
 
 ## Interoperability and adoption gate
 

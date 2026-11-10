@@ -1,0 +1,44 @@
+{
+  "case_count": 6,
+  "cases": [
+    {
+      "actual": "ValueError",
+      "case": "no stage skipping",
+      "expected": "ValueError",
+      "passed": true
+    },
+    {
+      "actual": 1,
+      "case": "failed transition appends no stage event",
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "actual": "ValueError",
+      "case": "no source-free claim",
+      "expected": "ValueError",
+      "passed": true
+    },
+    {
+      "actual": "ValueError",
+      "case": "same normalized reviewer is not separate",
+      "expected": "ValueError",
+      "passed": true
+    },
+    {
+      "actual": 5,
+      "case": "declared separate reviewer permits recorded stage",
+      "expected": 5,
+      "passed": true
+    },
+    {
+      "actual": "Speculative",
+      "case": "stage advancement does not change epistemic label",
+      "expected": "Speculative",
+      "passed": true
+    }
+  ],
+  "schema_version": 1,
+  "scope": "Synthetic curriculum checks only",
+  "status": "PASS"
+}

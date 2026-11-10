@@ -1,0 +1,21 @@
+{
+  "case_count": 6,
+  "command": "python curriculum/lab.py --verify",
+  "exit_code": 0,
+  "expected_sha256": "fa2abfcd5c00f7d49185a64ffc2857d716f88b2a12179a20f761fd3259ebb724",
+  "lab_sha256": "f646e997f4b60d16ebe0c97f13374f4f0beeeaa87c4bd9da9e3e701d34989f4e",
+  "python": "3.12.14",
+  "repository": "tltmgnt/QuantumOS",
+  "schema_version": 1,
+  "scope": "Local synthetic curriculum validation on the recorded source snapshot; not complete repository CI, learning outcomes, independent scientific reproduction or deployment approval",
+  "source_and_fixture_sha256": {
+    "examples/classical_limits.json": "b0ef1c4232fc8c8716817204a4c7956ba9140d14e9783ec1cf5d9f46e8c99e4d",
+    "examples/polynomial_research.json": "5efb02823156ba24579740afdd5e55cd8cf4ccaa96c5fe94af19c0b96c85ed7b",
+    "examples/quantum_constraints.json": "3efd0488ef24cb8dfc08d55302e16365af69acc7a104ec9e2008d6bfcea830bd",
+    "examples/research_bundle.json": "944e16bf4c44fc27a5682c336d74e1bf8a2803571bf84293ecc24b47e2f77751",
+    "quantum_omega/__init__.py": "8a6082ca4e5207b3e3a05e7103016d42e367d4541fc4b2b20f575a02ca5a554e",
+    "quantum_omega/core.py": "ef92110f8093025784e734cca93453cb506f3427082530784460f7fb84374d41"
+  },
+  "source_base_commit": "172c1d9197fe1887513699bffbfafb7645d62ed1",
+  "wrong_expectation_exit_code": 1
+}
